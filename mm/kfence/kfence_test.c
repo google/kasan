@@ -11,6 +11,8 @@
  *         Marco Elver <elver@google.com>
  */
 
+disable_capability_analysis();
+
 #include <kunit/test.h>
 #include <linux/jiffies.h>
 #include <linux/kernel.h>
@@ -25,6 +27,8 @@
 #include <trace/events/printk.h>
 
 #include <asm/kfence.h>
+
+enable_capability_analysis();
 
 #include "kfence.h"
 
