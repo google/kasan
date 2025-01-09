@@ -9,12 +9,16 @@
 #ifndef MM_KFENCE_KFENCE_H
 #define MM_KFENCE_KFENCE_H
 
+disable_capability_analysis();
+
 #include <linux/mm.h>
 #include <linux/slab.h>
 #include <linux/spinlock.h>
 #include <linux/types.h>
 
 #include "../slab.h" /* for struct kmem_cache */
+
+enable_capability_analysis();
 
 /*
  * Get the canary byte pattern for @addr. Use a pattern that varies based on the
@@ -33,6 +37,8 @@
 
 /* Maximum stack depth for reports. */
 #define KFENCE_STACK_DEPTH 64
+
+extern raw_spinlock_t kfence_freelist_lock;
 
 /* KFENCE object states. */
 enum kfence_object_state {
@@ -53,7 +59,7 @@ struct kfence_track {
 
 /* KFENCE metadata per guarded allocation. */
 struct kfence_metadata {
-	struct list_head list;		/* Freelist node; access under kfence_freelist_lock. */
+	struct list_head list __var_guarded_by(&kfence_freelist_lock);	/* Freelist node. */
 	struct rcu_head rcu_head;	/* For delayed freeing. */
 
 	/*
@@ -91,13 +97,13 @@ struct kfence_metadata {
 	 * In case of an invalid access, the page that was unprotected; we
 	 * optimistically only store one address.
 	 */
-	unsigned long unprotected_page;
+	unsigned long unprotected_page __var_guarded_by(&lock);
 
 	/* Allocation and free stack information. */
-	struct kfence_track alloc_track;
-	struct kfence_track free_track;
+	struct kfence_track alloc_track __var_guarded_by(&lock);
+	struct kfence_track free_track __var_guarded_by(&lock);
 	/* For updating alloc_covered on frees. */
-	u32 alloc_stack_hash;
+	u32 alloc_stack_hash __var_guarded_by(&lock);
 #ifdef CONFIG_MEMCG
 	struct slabobj_ext obj_exts;
 #endif
@@ -141,6 +147,6 @@ enum kfence_error_type {
 void kfence_report_error(unsigned long address, bool is_write, struct pt_regs *regs,
 			 const struct kfence_metadata *meta, enum kfence_error_type type);
 
-void kfence_print_object(struct seq_file *seq, const struct kfence_metadata *meta);
+void kfence_print_object(struct seq_file *seq, const struct kfence_metadata *meta) __must_hold(&meta->lock);
 
 #endif /* MM_KFENCE_KFENCE_H */
