@@ -14,8 +14,6 @@
 
 #define pr_fmt(fmt) "stackdepot: " fmt
 
-disable_capability_analysis();
-
 #include <linux/debugfs.h>
 #include <linux/gfp.h>
 #include <linux/jhash.h>
@@ -37,8 +35,6 @@ disable_capability_analysis();
 #include <linux/types.h>
 #include <linux/memblock.h>
 #include <linux/kasan-enabled.h>
-
-enable_capability_analysis();
 
 #define DEPOT_POOLS_CAP 8192
 /* The pool_index is offset by 1 so the first record does not have a 0 handle. */

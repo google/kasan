@@ -737,6 +737,7 @@ extern struct sighand_struct *lock_task_sighand(struct task_struct *task,
 
 static inline void unlock_task_sighand(struct task_struct *task,
 						unsigned long *flags)
+	__releases(&task->sighand->siglock)
 {
 	spin_unlock_irqrestore(&task->sighand->siglock, *flags);
 }

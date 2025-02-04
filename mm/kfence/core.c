@@ -7,8 +7,6 @@
 
 #define pr_fmt(fmt) "kfence: " fmt
 
-disable_capability_analysis();
-
 #include <linux/atomic.h>
 #include <linux/bug.h>
 #include <linux/debugfs.h>
@@ -35,8 +33,6 @@ disable_capability_analysis();
 #include <linux/string.h>
 
 #include <asm/kfence.h>
-
-enable_capability_analysis();
 
 #include "kfence.h"
 

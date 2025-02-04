@@ -703,6 +703,7 @@ static inline void vma_numab_state_free(struct vm_area_struct *vma) {}
  * using mmap_lock. The function should never yield false unlocked result.
  */
 static inline bool vma_start_read(struct vm_area_struct *vma)
+	__cond_acquires_shared(true, &vma->vm_lock->lock)
 {
 	/*
 	 * Check before locking. A race might cause false locked result.
@@ -736,6 +737,7 @@ static inline bool vma_start_read(struct vm_area_struct *vma)
 }
 
 static inline void vma_end_read(struct vm_area_struct *vma)
+	__releases_shared(&vma->vm_lock->lock)
 {
 	rcu_read_lock(); /* keeps vma alive till the end of up_read */
 	up_read(&vma->vm_lock->lock);
@@ -800,6 +802,7 @@ static inline void vma_mark_detached(struct vm_area_struct *vma, bool detached)
 }
 
 static inline void release_fault_lock(struct vm_fault *vmf)
+	__no_capability_analysis
 {
 	if (vmf->flags & FAULT_FLAG_VMA_LOCK)
 		vma_end_read(vmf->vma);
@@ -3092,6 +3095,7 @@ static inline bool pmd_ptlock_init(struct ptdesc *ptdesc) { return true; }
 #endif
 
 static inline spinlock_t *pmd_lock(struct mm_struct *mm, pmd_t *pmd)
+	__no_capability_analysis
 {
 	spinlock_t *ptl = pmd_lockptr(mm, pmd);
 	spin_lock(ptl);
@@ -3119,6 +3123,7 @@ static inline spinlock_t *pud_lockptr(struct mm_struct *mm, pud_t *pud)
 }
 
 static inline spinlock_t *pud_lock(struct mm_struct *mm, pud_t *pud)
+	__no_capability_analysis
 {
 	spinlock_t *ptl = pud_lockptr(mm, pud);
 

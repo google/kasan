@@ -5,8 +5,6 @@
  * Copyright (C) 2020, Google LLC.
  */
 
-disable_capability_analysis();
-
 #include <linux/stdarg.h>
 
 #include <linux/kernel.h>
@@ -23,8 +21,6 @@ disable_capability_analysis();
 #include <trace/events/error_report.h>
 
 #include <asm/kfence.h>
-
-enable_capability_analysis();
 
 #include "kfence.h"
 

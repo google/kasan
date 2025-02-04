@@ -1512,17 +1512,20 @@ static inline struct lruvec *parent_lruvec(struct lruvec *lruvec)
 }
 
 static inline void unlock_page_lruvec(struct lruvec *lruvec)
+	__releases(&lruvec->lru_lock)
 {
 	spin_unlock(&lruvec->lru_lock);
 }
 
 static inline void unlock_page_lruvec_irq(struct lruvec *lruvec)
+	__releases(&lruvec->lru_lock)
 {
 	spin_unlock_irq(&lruvec->lru_lock);
 }
 
 static inline void unlock_page_lruvec_irqrestore(struct lruvec *lruvec,
 		unsigned long flags)
+	__releases(&lruvec->lru_lock)
 {
 	spin_unlock_irqrestore(&lruvec->lru_lock, flags);
 }
@@ -1538,6 +1541,7 @@ static inline bool folio_matches_lruvec(struct folio *folio,
 /* Don't lock again iff page's lruvec locked */
 static inline struct lruvec *folio_lruvec_relock_irq(struct folio *folio,
 		struct lruvec *locked_lruvec)
+	__no_capability_analysis
 {
 	if (locked_lruvec) {
 		if (folio_matches_lruvec(folio, locked_lruvec))
@@ -1552,6 +1556,7 @@ static inline struct lruvec *folio_lruvec_relock_irq(struct folio *folio,
 /* Don't lock again iff folio's lruvec locked */
 static inline void folio_lruvec_relock_irqsave(struct folio *folio,
 		struct lruvec **lruvecp, unsigned long *flags)
+	__no_capability_analysis
 {
 	if (*lruvecp) {
 		if (folio_matches_lruvec(folio, *lruvecp))

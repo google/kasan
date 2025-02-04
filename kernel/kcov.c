@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: GPL-2.0
 #define pr_fmt(fmt) "kcov: " fmt
 
-disable_capability_analysis();
-
 #define DISABLE_BRANCH_PROFILING
 #include <linux/atomic.h>
 #include <linux/compiler.h>
@@ -28,8 +26,6 @@ disable_capability_analysis();
 #include <linux/refcount.h>
 #include <linux/log2.h>
 #include <asm/setup.h>
-
-enable_capability_analysis();
 
 #define kcov_debug(fmt, ...) pr_debug("%s: " fmt, __func__, ##__VA_ARGS__)
 

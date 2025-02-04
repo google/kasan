@@ -9,16 +9,12 @@
 #ifndef MM_KFENCE_KFENCE_H
 #define MM_KFENCE_KFENCE_H
 
-disable_capability_analysis();
-
 #include <linux/mm.h>
 #include <linux/slab.h>
 #include <linux/spinlock.h>
 #include <linux/types.h>
 
 #include "../slab.h" /* for struct kmem_cache */
-
-enable_capability_analysis();
 
 /*
  * Get the canary byte pattern for @addr. Use a pattern that varies based on the

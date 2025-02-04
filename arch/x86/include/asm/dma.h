@@ -151,6 +151,7 @@
 extern spinlock_t  dma_spin_lock;
 
 static inline unsigned long claim_dma_lock(void)
+	__acquires(&dma_spin_lock)
 {
 	unsigned long flags;
 	spin_lock_irqsave(&dma_spin_lock, flags);
@@ -158,6 +159,7 @@ static inline unsigned long claim_dma_lock(void)
 }
 
 static inline void release_dma_lock(unsigned long flags)
+	__releases(&dma_spin_lock)
 {
 	spin_unlock_irqrestore(&dma_spin_lock, flags);
 }

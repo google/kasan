@@ -13,8 +13,6 @@
 
 #include <linux/rhashtable.h>
 
-disable_capability_analysis();
-
 #include <linux/atomic.h>
 #include <linux/kernel.h>
 #include <linux/init.h>
@@ -28,8 +26,6 @@ disable_capability_analysis();
 #include <linux/random.h>
 #include <linux/err.h>
 #include <linux/export.h>
-
-enable_capability_analysis();
 
 #define HASH_DEFAULT_SIZE	64UL
 #define HASH_MIN_SIZE		4U

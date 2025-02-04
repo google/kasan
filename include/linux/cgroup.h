@@ -364,11 +364,13 @@ static inline void cgroup_put(struct cgroup *cgrp)
 extern struct mutex cgroup_mutex;
 
 static inline void cgroup_lock(void)
+	__acquires(&cgroup_mutex)
 {
 	mutex_lock(&cgroup_mutex);
 }
 
 static inline void cgroup_unlock(void)
+	__releases(&cgroup_mutex)
 {
 	mutex_unlock(&cgroup_mutex);
 }

@@ -1026,21 +1026,25 @@ static inline bool dev_pm_test_driver_flags(struct device *dev, u32 flags)
 }
 
 static inline void device_lock(struct device *dev)
+	__acquires(&dev->mutex)
 {
 	mutex_lock(&dev->mutex);
 }
 
 static inline int device_lock_interruptible(struct device *dev)
+	__cond_acquires(0, &dev->mutex)
 {
 	return mutex_lock_interruptible(&dev->mutex);
 }
 
 static inline int device_trylock(struct device *dev)
+	__cond_acquires(1, &dev->mutex)
 {
 	return mutex_trylock(&dev->mutex);
 }
 
 static inline void device_unlock(struct device *dev)
+	__releases(&dev->mutex)
 {
 	mutex_unlock(&dev->mutex);
 }

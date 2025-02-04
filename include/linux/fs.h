@@ -541,41 +541,49 @@ static inline bool mapping_tagged(struct address_space *mapping, xa_mark_t tag)
 }
 
 static inline void i_mmap_lock_write(struct address_space *mapping)
+	__acquires(&mapping->i_mmap_rwsem)
 {
 	down_write(&mapping->i_mmap_rwsem);
 }
 
 static inline int i_mmap_trylock_write(struct address_space *mapping)
+	__cond_acquires(1, &mapping->i_mmap_rwsem)
 {
 	return down_write_trylock(&mapping->i_mmap_rwsem);
 }
 
 static inline void i_mmap_unlock_write(struct address_space *mapping)
+	__releases(&mapping->i_mmap_rwsem)
 {
 	up_write(&mapping->i_mmap_rwsem);
 }
 
 static inline int i_mmap_trylock_read(struct address_space *mapping)
+	__cond_acquires_shared(1, &mapping->i_mmap_rwsem)
 {
 	return down_read_trylock(&mapping->i_mmap_rwsem);
 }
 
 static inline void i_mmap_lock_read(struct address_space *mapping)
+	__acquires_shared(&mapping->i_mmap_rwsem)
 {
 	down_read(&mapping->i_mmap_rwsem);
 }
 
 static inline void i_mmap_unlock_read(struct address_space *mapping)
+	__releases_shared(&mapping->i_mmap_rwsem)
 {
 	up_read(&mapping->i_mmap_rwsem);
 }
 
 static inline void i_mmap_assert_locked(struct address_space *mapping)
+	__asserts_cap(&mapping->i_mmap_rwsem)
 {
 	lockdep_assert_held(&mapping->i_mmap_rwsem);
 }
 
 static inline void i_mmap_assert_write_locked(struct address_space *mapping)
+	__asserts_cap(&mapping->i_mmap_rwsem)
 {
 	lockdep_assert_held_write(&mapping->i_mmap_rwsem);
 }
@@ -861,31 +869,37 @@ enum inode_i_mutex_lock_class
 };
 
 static inline void inode_lock(struct inode *inode)
+	__acquires(&inode->i_rwsem)
 {
 	down_write(&inode->i_rwsem);
 }
 
 static inline void inode_unlock(struct inode *inode)
+	__releases(&inode->i_rwsem)
 {
 	up_write(&inode->i_rwsem);
 }
 
 static inline void inode_lock_shared(struct inode *inode)
+	__acquires_shared(&inode->i_rwsem)
 {
 	down_read(&inode->i_rwsem);
 }
 
 static inline void inode_unlock_shared(struct inode *inode)
+	__releases_shared(&inode->i_rwsem)
 {
 	up_read(&inode->i_rwsem);
 }
 
 static inline int inode_trylock(struct inode *inode)
+	__cond_acquires(1, &inode->i_rwsem)
 {
 	return down_write_trylock(&inode->i_rwsem);
 }
 
 static inline int inode_trylock_shared(struct inode *inode)
+	__cond_acquires_shared(1, &inode->i_rwsem)
 {
 	return down_read_trylock(&inode->i_rwsem);
 }
@@ -896,38 +910,45 @@ static inline int inode_is_locked(struct inode *inode)
 }
 
 static inline void inode_lock_nested(struct inode *inode, unsigned subclass)
+	__acquires(&inode->i_rwsem)
 {
 	down_write_nested(&inode->i_rwsem, subclass);
 }
 
 static inline void inode_lock_shared_nested(struct inode *inode, unsigned subclass)
+	__acquires_shared(&inode->i_rwsem)
 {
 	down_read_nested(&inode->i_rwsem, subclass);
 }
 
 static inline void filemap_invalidate_lock(struct address_space *mapping)
+	__acquires(&mapping->invalidate_lock)
 {
 	down_write(&mapping->invalidate_lock);
 }
 
 static inline void filemap_invalidate_unlock(struct address_space *mapping)
+	__releases(&mapping->invalidate_lock)
 {
 	up_write(&mapping->invalidate_lock);
 }
 
 static inline void filemap_invalidate_lock_shared(struct address_space *mapping)
+	__acquires_shared(&mapping->invalidate_lock)
 {
 	down_read(&mapping->invalidate_lock);
 }
 
 static inline int filemap_invalidate_trylock_shared(
 					struct address_space *mapping)
+	__cond_acquires_shared(1, &mapping->invalidate_lock)
 {
 	return down_read_trylock(&mapping->invalidate_lock);
 }
 
 static inline void filemap_invalidate_unlock_shared(
 					struct address_space *mapping)
+	__releases_shared(&mapping->invalidate_lock)
 {
 	up_read(&mapping->invalidate_lock);
 }
@@ -3855,6 +3876,8 @@ static inline bool dir_emit_dots(struct file *file, struct dir_context *ctx)
 	return true;
 }
 static inline bool dir_relax(struct inode *inode)
+	__releases(&inode->i_rwsem)
+	__acquires(&inode->i_rwsem)
 {
 	inode_unlock(inode);
 	inode_lock(inode);
@@ -3862,6 +3885,8 @@ static inline bool dir_relax(struct inode *inode)
 }
 
 static inline bool dir_relax_shared(struct inode *inode)
+	__releases_shared(&inode->i_rwsem)
+	__acquires_shared(&inode->i_rwsem)
 {
 	inode_unlock_shared(inode);
 	inode_lock_shared(inode);
