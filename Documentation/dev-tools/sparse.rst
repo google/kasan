@@ -2,6 +2,8 @@
 .. Copyright 2004 Pavel Machek <pavel@ucw.cz>
 .. Copyright 2006 Bob Copeland <me@bobcopeland.com>
 
+.. _sparse:
+
 Sparse
 ======
 
@@ -71,6 +73,8 @@ If the function enters and exits without the lock held, acquiring and
 releasing the lock inside the function in a balanced way, no
 annotation is needed.  The three annotations above are for cases where
 sparse would otherwise report a context imbalance.
+
+Also see :ref:`Compiler-Based Capability Analysis <capability-analysis>`.
 
 Getting sparse
 --------------
