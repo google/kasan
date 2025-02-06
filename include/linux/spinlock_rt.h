@@ -123,13 +123,13 @@ static __always_inline void spin_unlock_irqrestore(spinlock_t *lock,
 }
 
 #define spin_trylock(lock)				\
-	__cond_lock(lock, rt_spin_trylock(lock))
+	__cond_acquire(lock, rt_spin_trylock(lock))
 
 #define spin_trylock_bh(lock)				\
-	__cond_lock(lock, rt_spin_trylock_bh(lock))
+	__cond_acquire(lock, rt_spin_trylock_bh(lock))
 
 #define spin_trylock_irq(lock)				\
-	__cond_lock(lock, rt_spin_trylock(lock))
+	__cond_acquire(lock, rt_spin_trylock(lock))
 
 #define spin_trylock_irqsave(lock, flags)		\
 ({							\

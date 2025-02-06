@@ -1136,7 +1136,7 @@ void iwl_trans_set_bits_mask(struct iwl_trans *trans, u32 reg,
 bool _iwl_trans_grab_nic_access(struct iwl_trans *trans);
 
 #define iwl_trans_grab_nic_access(trans)		\
-	__cond_lock(nic_access,				\
+	__cond_acquire(nic_access,				\
 		    likely(_iwl_trans_grab_nic_access(trans)))
 
 void __releases(nic_access)

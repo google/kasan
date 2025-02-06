@@ -2738,7 +2738,7 @@ static inline pte_t *get_locked_pte(struct mm_struct *mm, unsigned long addr,
 				    spinlock_t **ptl)
 {
 	pte_t *ptep;
-	__cond_lock(*ptl, ptep = __get_locked_pte(mm, addr, ptl));
+	__cond_acquire(*ptl, ptep = __get_locked_pte(mm, addr, ptl));
 	return ptep;
 }
 
@@ -3029,7 +3029,7 @@ static inline pte_t *__pte_offset_map(pmd_t *pmd, unsigned long addr,
 {
 	pte_t *pte;
 
-	__cond_lock(RCU, pte = ___pte_offset_map(pmd, addr, pmdvalp));
+	__cond_acquire(RCU, pte = ___pte_offset_map(pmd, addr, pmdvalp));
 	return pte;
 }
 static inline pte_t *pte_offset_map(pmd_t *pmd, unsigned long addr)
@@ -3044,7 +3044,7 @@ static inline pte_t *pte_offset_map_lock(struct mm_struct *mm, pmd_t *pmd,
 {
 	pte_t *pte;
 
-	__cond_lock(RCU, __cond_lock(*ptlp,
+	__cond_acquire(RCU, __cond_acquire(*ptlp,
 			pte = __pte_offset_map_lock(mm, pmd, addr, ptlp)));
 	return pte;
 }
