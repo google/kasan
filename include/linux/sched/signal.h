@@ -741,7 +741,7 @@ static inline struct sighand_struct *lock_task_sighand(struct task_struct *task,
 	struct sighand_struct *ret;
 
 	ret = __lock_task_sighand(task, flags);
-	(void)__cond_lock(&task->sighand->siglock, ret);
+	(void)__cond_acquire(&task->sighand->siglock, ret);
 	return ret;
 }
 

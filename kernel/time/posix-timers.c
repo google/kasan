@@ -63,7 +63,7 @@ static struct k_itimer *__lock_timer(timer_t timer_id, unsigned long *flags);
 
 #define lock_timer(tid, flags)						   \
 ({	struct k_itimer *__timr;					   \
-	__cond_lock(&__timr->it_lock, __timr = __lock_timer(tid, flags));  \
+	__cond_acquire(&__timr->it_lock, __timr = __lock_timer(tid, flags));  \
 	__timr;								   \
 })
 
