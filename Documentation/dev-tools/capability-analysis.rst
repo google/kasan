@@ -112,10 +112,8 @@ Keywords
                  __releases_shared
                  __acquire
                  __release
-                 __cond_lock
                  __acquire_shared
                  __release_shared
-                 __cond_lock_shared
                  capability_unsafe
                  __no_capability_analysis
                  disable_capability_analysis enable_capability_analysis
