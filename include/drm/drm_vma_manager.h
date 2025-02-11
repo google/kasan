@@ -120,6 +120,7 @@ drm_vma_offset_exact_lookup_locked(struct drm_vma_offset_manager *mgr,
  * Note: You're in atomic-context while holding this lock!
  */
 static inline void drm_vma_offset_lock_lookup(struct drm_vma_offset_manager *mgr)
+	__acquires_shared(&mgr->vm_lock)
 {
 	read_lock(&mgr->vm_lock);
 }
@@ -131,6 +132,7 @@ static inline void drm_vma_offset_lock_lookup(struct drm_vma_offset_manager *mgr
  * Release lookup-lock. See drm_vma_offset_lock_lookup() for more information.
  */
 static inline void drm_vma_offset_unlock_lookup(struct drm_vma_offset_manager *mgr)
+	__releases_shared(&mgr->vm_lock)
 {
 	read_unlock(&mgr->vm_lock);
 }

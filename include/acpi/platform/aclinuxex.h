@@ -98,6 +98,7 @@ static inline acpi_thread_id acpi_os_get_thread_id(void)
 	})
 
 static inline acpi_cpu_flags acpi_os_acquire_raw_lock(acpi_raw_spinlock lockp)
+	__acquires(lockp)
 {
 	acpi_cpu_flags flags;
 
@@ -107,6 +108,7 @@ static inline acpi_cpu_flags acpi_os_acquire_raw_lock(acpi_raw_spinlock lockp)
 
 static inline void acpi_os_release_raw_lock(acpi_raw_spinlock lockp,
 					    acpi_cpu_flags flags)
+	__releases(lockp)
 {
 	raw_spin_unlock_irqrestore(lockp, flags);
 }

@@ -461,7 +461,7 @@ struct snd_pcm_group {		/* keep linked substreams */
 
 struct pid;
 
-struct snd_pcm_substream {
+struct_with_capability(snd_pcm_substream) {
 	struct snd_pcm *pcm;
 	struct snd_pcm_str *pstr;
 	void *private_data;		/* copied from pcm->private_data */
@@ -634,12 +634,12 @@ static inline int snd_pcm_stream_linked(struct snd_pcm_substream *substream)
 	return substream->group != &substream->self_group;
 }
 
-void snd_pcm_stream_lock(struct snd_pcm_substream *substream);
-void snd_pcm_stream_unlock(struct snd_pcm_substream *substream);
-void snd_pcm_stream_lock_irq(struct snd_pcm_substream *substream);
-void snd_pcm_stream_unlock_irq(struct snd_pcm_substream *substream);
-unsigned long _snd_pcm_stream_lock_irqsave(struct snd_pcm_substream *substream);
-unsigned long _snd_pcm_stream_lock_irqsave_nested(struct snd_pcm_substream *substream);
+void snd_pcm_stream_lock(struct snd_pcm_substream *substream) __acquires(substream);
+void snd_pcm_stream_unlock(struct snd_pcm_substream *substream) __releases(substream);
+void snd_pcm_stream_lock_irq(struct snd_pcm_substream *substream) __acquires(substream);
+void snd_pcm_stream_unlock_irq(struct snd_pcm_substream *substream) __releases(substream);
+unsigned long _snd_pcm_stream_lock_irqsave(struct snd_pcm_substream *substream) __acquires(substream);
+unsigned long _snd_pcm_stream_lock_irqsave_nested(struct snd_pcm_substream *substream) __acquires(substream);
 
 /**
  * snd_pcm_stream_lock_irqsave - Lock the PCM stream
@@ -656,7 +656,7 @@ unsigned long _snd_pcm_stream_lock_irqsave_nested(struct snd_pcm_substream *subs
 		flags = _snd_pcm_stream_lock_irqsave(substream); \
 	} while (0)
 void snd_pcm_stream_unlock_irqrestore(struct snd_pcm_substream *substream,
-				      unsigned long flags);
+				      unsigned long flags) __releases(substream);
 
 /**
  * snd_pcm_stream_lock_irqsave_nested - Single-nested PCM stream locking

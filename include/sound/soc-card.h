@@ -14,16 +14,19 @@ enum snd_soc_card_subclass {
 };
 
 static inline void snd_soc_card_mutex_lock_root(struct snd_soc_card *card)
+	__acquires(&card->mutex)
 {
 	mutex_lock_nested(&card->mutex, SND_SOC_CARD_CLASS_ROOT);
 }
 
 static inline void snd_soc_card_mutex_lock(struct snd_soc_card *card)
+	__acquires(&card->mutex)
 {
 	mutex_lock_nested(&card->mutex, SND_SOC_CARD_CLASS_RUNTIME);
 }
 
 static inline void snd_soc_card_mutex_unlock(struct snd_soc_card *card)
+	__releases(&card->mutex)
 {
 	mutex_unlock(&card->mutex);
 }

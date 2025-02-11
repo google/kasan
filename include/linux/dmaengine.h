@@ -694,10 +694,12 @@ static inline struct dma_async_tx_descriptor *txd_parent(struct dma_async_tx_des
 
 #else
 static inline void txd_lock(struct dma_async_tx_descriptor *txd)
+	__acquires(&txd->lock)
 {
 	spin_lock_bh(&txd->lock);
 }
 static inline void txd_unlock(struct dma_async_tx_descriptor *txd)
+	__releases(&txd->lock)
 {
 	spin_unlock_bh(&txd->lock);
 }
